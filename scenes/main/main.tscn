@@ -1,3 +1,16 @@
-[gd_scene format=3 uid="uid://c45o3ymy867u4"]
+[gd_scene load_steps=4 format=3 uid="uid://c45o3ymy867u4"]
+
+[ext_resource type="Script" path="res://scenes/main/main.gd" id="1_mig6c"]
+[ext_resource type="PackedScene" uid="uid://c4lfjeif62rcx" path="res://scenes/entity/entity.tscn" id="2_hbpbt"]
+
+[sub_resource type="TileSet" id="TileSet_na5xq"]
 
 [node name="Main" type="Node2D"]
+script = ExtResource("1_mig6c")
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = SubResource("TileSet_na5xq")
+format = 2
+
+[node name="entity" parent="." instance=ExtResource("2_hbpbt")]
+unique_name_in_owner = true

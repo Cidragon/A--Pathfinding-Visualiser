@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4lfjeif62rcx"]
+
+[ext_resource type="Texture2D" uid="uid://cyl51ueqgbbgt" path="res://assets/characters/character.png" id="1_swcxi"]
+
+[node name="entity" type="Sprite2D"]
+texture = ExtResource("1_swcxi")
+centered = false

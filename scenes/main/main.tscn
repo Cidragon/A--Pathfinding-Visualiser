@@ -1,16 +1,38 @@
-[gd_scene load_steps=4 format=3 uid="uid://c45o3ymy867u4"]
+[gd_scene load_steps=9 format=3 uid="uid://c45o3ymy867u4"]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_mig6c"]
-[ext_resource type="PackedScene" uid="uid://c4lfjeif62rcx" path="res://scenes/entity/entity.tscn" id="2_hbpbt"]
+[ext_resource type="Texture2D" uid="uid://be8c8rsa1iolj" path="res://assets/tiles/tile.png" id="2_215v8"]
+[ext_resource type="Texture2D" uid="uid://bueth4gjmy4pg" path="res://assets/tiles/path.png" id="3_tj818"]
+[ext_resource type="Script" path="res://scenes/main/line_debug.gd" id="5_jk7sf"]
+[ext_resource type="Theme" uid="uid://c0p8007qci6a1" path="res://resources/label_font_size.tres" id="6_8yx64"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ju3da"]
+texture = ExtResource("2_215v8")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gg3b1"]
+texture = ExtResource("3_tj818")
+0:0/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_na5xq"]
+sources/0 = SubResource("TileSetAtlasSource_ju3da")
+sources/1 = SubResource("TileSetAtlasSource_gg3b1")
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_mig6c")
+label_font_size = ExtResource("6_8yx64")
 
-[node name="TileMap" type="TileMap" parent="."]
+[node name="tiles" type="TileMap" parent="."]
+unique_name_in_owner = true
 tile_set = SubResource("TileSet_na5xq")
 format = 2
 
-[node name="entity" parent="." instance=ExtResource("2_hbpbt")]
-unique_name_in_owner = true
+[node name="line_debug" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("5_jk7sf")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0

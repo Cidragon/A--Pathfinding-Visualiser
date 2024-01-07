@@ -1,9 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://c4lfjeif62rcx"]
-
-[ext_resource type="Texture2D" uid="uid://cyl51ueqgbbgt" path="res://assets/characters/character.png" id="1_swcxi"]
-[ext_resource type="Script" path="res://scenes/entity/entity.gd" id="2_cvv5a"]
-
-[node name="entity" type="Sprite2D"]
-texture = ExtResource("1_swcxi")
-centered = false
-script = ExtResource("2_cvv5a")

@@ -38,38 +38,21 @@ func reset_label_score() -> void:
 			var label = label_score[col][row]
 			label.text = "(" + str(col) + "," + str(row) + ")"
 
+var start_position : Vector2i = Vector2i(0,0)
+var end_position : Vector2i = Vector2i(0,0)
+
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("left_click"):
-		print("left click")
+	if event.is_action_pressed("set_start_position"):
 		var mouse_position : Vector2i = get_global_mouse_position()
-		var objective_grid_position : Vector2i = mouse_position / new_astar.tile_size
-		var start_position : Vector2i = Vector2i(0,0) / new_astar.tile_size
+		start_position = mouse_position / new_astar.tile_size
 		print("start grid position: ", start_position)
-		print("objective grid position: ", objective_grid_position)
-		var path : Array[Vector2i] = new_astar.calculate_path(start_position, objective_grid_position)
-		
-		reset_label_score()
-		tiles.clear()
-		for tile in new_astar.closedSet:
-			#print(str(new_astar.grid[tile.x][tile.y].f))
-			var g = str(new_astar.grid[tile.x][tile.y].g)
-			var h = str(new_astar.grid[tile.x][tile.y].h)
-			
-			label_score[tile.x][tile.y].text = g + " " + h
-			if tile in path:
-				tiles.set_cell(0, tile, 1, Vector2i(0,0))
-			else:
-				tiles.set_cell(0, tile, 0, Vector2i(0,0))
-		
-		for tile in new_astar.openSet:
-			var g = str(new_astar.grid[tile.x][tile.y].g)
-			var h = str(new_astar.grid[tile.x][tile.y].h)
-			
-			label_score[tile.x][tile.y].text = g + " " + h
-			if tile in path:
-				tiles.set_cell(0, tile, 1, Vector2i(0,0))
-			else:
-				tiles.set_cell(0, tile, 0, Vector2i(0,0))
+		get_full_path()
+	elif event.is_action_pressed("set_end_position"):
+		print("set_end_position")
+		var mouse_position : Vector2i = get_global_mouse_position()
+		end_position = mouse_position / new_astar.tile_size
+		print("end grid position: ", end_position)
+		get_full_path()
 	elif event.is_action_pressed("q"):
 		print("Q pressed")
 		var mouse_position : Vector2i = get_global_mouse_position()
@@ -105,3 +88,29 @@ func _unhandled_input(event: InputEvent) -> void:
 			var tile : Vector2i = path[0]
 			tiles.set_cell(0, tile, 2, Vector2i(0,0))
 		
+
+func get_full_path() -> void:
+	var path : Array[Vector2i] = new_astar.calculate_path(start_position, end_position)
+		
+	reset_label_score()
+	tiles.clear()
+	for tile in new_astar.closedSet:
+		#print(str(new_astar.grid[tile.x][tile.y].f))
+		var g = str(new_astar.grid[tile.x][tile.y].g)
+		var h = str(new_astar.grid[tile.x][tile.y].h)
+		
+		label_score[tile.x][tile.y].text = g + " " + h
+		if tile in path:
+			tiles.set_cell(0, tile, 1, Vector2i(0,0))
+		else:
+			tiles.set_cell(0, tile, 0, Vector2i(0,0))
+	
+	for tile in new_astar.openSet:
+		var g = str(new_astar.grid[tile.x][tile.y].g)
+		var h = str(new_astar.grid[tile.x][tile.y].h)
+		
+		label_score[tile.x][tile.y].text = g + " " + h
+		if tile in path:
+			tiles.set_cell(0, tile, 1, Vector2i(0,0))
+		else:
+			tiles.set_cell(0, tile, 0, Vector2i(0,0))

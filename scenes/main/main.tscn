@@ -36,8 +36,6 @@ format = 2
 [node name="line_debug" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
 script = ExtResource("5_jk7sf")
 
 [node name="Camera2D" type="Camera2D" parent="."]

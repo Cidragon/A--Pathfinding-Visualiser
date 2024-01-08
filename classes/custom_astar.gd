@@ -131,8 +131,8 @@ func get_lowest_fscore() -> Cell:
 		if cell.get_f() < lowest_f_cell.get_f():
 			lowest_f_cell = cell
 	
-	print("lowest f score: ", lowest_f_cell.get_f())
-	print(lowest_f_cell)
+	#print("lowest f score: ", lowest_f_cell.get_f())
+	#print(lowest_f_cell)
 	return lowest_f_cell
 
 func reconstruct_path(cell : Cell) -> Array[Vector2i]:

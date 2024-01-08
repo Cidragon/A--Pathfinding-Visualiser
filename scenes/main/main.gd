@@ -10,7 +10,7 @@ var new_astar : Custom_Astar = Custom_Astar.new()
 
 func _ready() -> void:
 	
-	new_astar.grid_size = Vector2i(80,40)
+	new_astar.grid_size = Vector2i(30,20)
 	new_astar.tile_size = Vector2(16,16)
 	new_astar.start_grid()
 	start_label_score()
@@ -24,7 +24,7 @@ func start_label_score() -> void:
 		label_score.push_back([])
 		for row in range(new_astar.grid_size.y):
 			var new_label : Label = Label.new()
-			new_label.position = Vector2i(col,row) * new_astar.tile_size + Vector2i(3,7)
+			new_label.position = Vector2i(col,row) * new_astar.tile_size + Vector2i(2,7)
 			new_label.text = "(" + str(col) + "," + str(row) + ")"
 			new_label.theme = label_font_size
 			new_label.scale = Vector2(0.25,0.25)
@@ -70,3 +70,38 @@ func _unhandled_input(event: InputEvent) -> void:
 				tiles.set_cell(0, tile, 1, Vector2i(0,0))
 			else:
 				tiles.set_cell(0, tile, 0, Vector2i(0,0))
+	elif event.is_action_pressed("q"):
+		print("Q pressed")
+		var mouse_position : Vector2i = get_global_mouse_position()
+		var objective_grid_position : Vector2i = mouse_position / new_astar.tile_size
+		var start_position : Vector2i = Vector2i(0,0) / new_astar.tile_size
+		var path : Array[Vector2i] = new_astar.calculate_path_next_step(start_position, objective_grid_position)
+		
+		print(new_astar.openSet)
+		print(new_astar.closedSet)
+		
+		for tile in new_astar.closedSet:
+			#print(str(new_astar.grid[tile.x][tile.y].f))
+			var g = str(new_astar.grid[tile.x][tile.y].g)
+			var h = str(new_astar.grid[tile.x][tile.y].h)
+			
+			label_score[tile.x][tile.y].text = g + " " + h
+			if tile in path:
+				tiles.set_cell(0, tile, 1, Vector2i(0,0))
+			else:
+				tiles.set_cell(0, tile, 0, Vector2i(0,0))
+		
+		for tile in new_astar.openSet:
+			var g = str(new_astar.grid[tile.x][tile.y].g)
+			var h = str(new_astar.grid[tile.x][tile.y].h)
+			
+			label_score[tile.x][tile.y].text = g + " " + h
+			if tile in path:
+				tiles.set_cell(0, tile, 1, Vector2i(0,0))
+			else:
+				tiles.set_cell(0, tile, 0, Vector2i(0,0))
+		
+		if not new_astar.found_path:
+			var tile : Vector2i = path[0]
+			tiles.set_cell(0, tile, 2, Vector2i(0,0))
+		

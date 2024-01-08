@@ -34,7 +34,6 @@ func calculate_path(from : Vector2i, target : Vector2i) -> Array[Vector2i]:
 	#grid[from.x][from.y].h = manhattan_distance(from, target)
 	#grid[from.x][from.y].h = euclidean_distance(from, target)
 	print(get_distance(from, target))
-	grid[from.x][from.y].calculate_f()
 	while openSet:
 		var current : Cell = get_lowest_fscore()
 		#print("openSet: ", openSet)
@@ -49,7 +48,7 @@ func calculate_path(from : Vector2i, target : Vector2i) -> Array[Vector2i]:
 			return reconstruct_path(current)
 		
 		for neighbor in get_neighbors(current):
-			if closedSet.has(neighbor):
+			if closedSet.has(Vector2i(neighbor.x, neighbor.y)):
 				continue
 			
 			var tentative_g : int = current.g + get_distance(Vector2(current.x, current.y), Vector2i(neighbor.x, neighbor.y))
@@ -60,7 +59,6 @@ func calculate_path(from : Vector2i, target : Vector2i) -> Array[Vector2i]:
 			if tentative_g < neighbor.g:
 				neighbor.g = tentative_g
 				neighbor.h = get_distance(Vector2(neighbor.x, neighbor.y), target)
-				neighbor.calculate_f()
 				neighbor.came_from = current
 				
 				#neighbor.h = manhattan_distance(Vector2(neighbor.x, neighbor.y), target)
@@ -75,6 +73,52 @@ func calculate_path(from : Vector2i, target : Vector2i) -> Array[Vector2i]:
 	print("NO PATH")
 	return []
 
+var found_path : bool = false
+var start_path_next_step : bool = true
+func calculate_path_next_step(from : Vector2i, target: Vector2i) -> Array[Vector2i]:
+	if start_path_next_step:
+		start_grid()
+		openSet = {}
+		closedSet = {}
+		openSet[Vector2i(from.x, from.y)] = grid[from.x][from.y]
+		grid[from.x][from.y].g = 0
+		grid[from.x][from.y].h = get_distance(from, target)
+		start_path_next_step = false
+	
+	if openSet and not found_path:
+		var current : Cell = get_lowest_fscore()
+		openSet.erase(Vector2i(current.x, current.y))
+		closedSet[Vector2i(current.x, current.y)] = true
+		
+		if Vector2i(current.x, current.y) == target:
+			print("FOUND PATH")
+			found_path = true
+			return reconstruct_path(current)
+		
+		for neighbor in get_neighbors(current):
+			if closedSet.has(Vector2i(neighbor.x, neighbor.y)):
+				continue
+			
+			var tentative_g : int = current.g + get_distance(Vector2(current.x, current.y), Vector2i(neighbor.x, neighbor.y))
+			if tentative_g < neighbor.g:
+				neighbor.g = tentative_g
+				neighbor.h = get_distance(Vector2(neighbor.x, neighbor.y), target)
+				neighbor.came_from = current
+				
+				#neighbor.h = manhattan_distance(Vector2(neighbor.x, neighbor.y), target)
+				#neighbor.h = euclidean_distance(Vector2(neighbor.x, neighbor.y), target)
+				
+				
+				if not openSet.has(Vector2i(neighbor.x, neighbor.y)):
+					openSet[Vector2i(neighbor.x, neighbor.y)] = neighbor 
+		
+		return [Vector2i(current.x, current.y)]
+		
+	
+	print("NO PATH")
+	return []
+
+
 func get_lowest_fscore() -> Cell:
 	var lowest_f_cell : Cell
 	#print(openSet)
@@ -83,9 +127,12 @@ func get_lowest_fscore() -> Cell:
 		if not lowest_f_cell:
 			lowest_f_cell = cell
 			continue
-		if lowest_f_cell and cell.get_f() < lowest_f_cell.get_f():
+		
+		if cell.get_f() < lowest_f_cell.get_f():
 			lowest_f_cell = cell
 	
+	print("lowest f score: ", lowest_f_cell.get_f())
+	print(lowest_f_cell)
 	return lowest_f_cell
 
 func reconstruct_path(cell : Cell) -> Array[Vector2i]:
@@ -137,7 +184,6 @@ func get_distance(a : Vector2i, b : Vector2i) -> int:
 		return 14*dy + 10*(dx - dy)
 	return 14*dx + 10*(dy-dx)
 
-
 func show_f_values() -> void:
 	var output = ""
 	for y in range(grid_size.x):
@@ -152,5 +198,9 @@ func show_f_values() -> void:
 
 func reset_cells() -> void:
 	for key in closedSet:
+		var cell : Cell = grid[key.x][key.y]
+		cell.clean()
+	
+	for key in openSet:
 		var cell : Cell = grid[key.x][key.y]
 		cell.clean()
